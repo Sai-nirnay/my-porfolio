@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sainirnay Sanjee — Electronics &amp; Computer Science Enthusiast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-900:#0B1220; --navy-800:#121B2E; --navy-700:#1B2A44;
+    --paper:#F7F5F2; --paper-alt:#EFEDE7; --ink:#12181F; --ink-dim:#5B6472;
+    --gold:#C9A227; --gold-deep:#A6821C; --gold-soft:#E9DBAE;
+    --line-light:#E4E1D9; --line-dark:#243349;
+    --light-text:#E7E9EE; --light-dim:#93A0B4;
+    --font-display:'Plus Jakarta Sans', sans-serif;
+    --font-body:'Inter', sans-serif;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{ background:var(--paper); color:var(--ink); font-family:var(--font-body); line-height:1.6; overflow-x:hidden; }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--gold); color:#12181F; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+  section{ padding:110px 0; }
+  .light{ background:var(--paper); }
+  .altlight{ background:var(--paper-alt); }
+  .dark{ background:var(--navy-900); color:var(--light-text); }
+  .reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* nav */
+  .navbar{ position:fixed; top:18px; left:0; right:0; z-index:100; display:flex; justify-content:center; }
+  .navpill{ background:rgba(11,18,32,0.92); backdrop-filter:blur(10px); border-radius:999px; padding:12px 12px 12px 22px; display:flex; align-items:center; gap:28px; box-shadow:0 12px 30px rgba(233,219,174,0.35); }
+  .brand{ font-family:var(--font-display); font-weight:700; color:#fff; font-size:15px; display:flex; align-items:center; gap:8px; }
+  .brand .mark{ width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg,var(--gold),var(--gold-deep)); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:#0B1220; }
+  .navlinks{ display:flex; gap:24px; list-style:none; font-size:13.5px; }
+  .navlinks a{ color:var(--light-dim); }
+  .navlinks a:hover{ color:#fff; }
+  .nav-cta{ background:var(--gold); color:#101322; font-weight:600; font-size:13px; padding:9px 18px; border-radius:999px; transition:transform .2s ease; border:none; cursor:pointer; font-family:var(--font-body); }
+  .nav-cta:hover{ transform:translateY(-2px); }
+  @media (max-width:760px){ .navlinks{ display:none; } }
+
+  /* hero */
+  .hero{ min-height:100vh; display:flex; align-items:center; padding-top:110px; position:relative; }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 1fr; gap:50px; align-items:center; width:100%; }
+  @media (max-width:860px){ .hero-grid{ grid-template-columns:1fr; } }
+  .pill{ display:inline-flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--line-light); padding:7px 16px; border-radius:999px; font-size:13px; color:var(--ink-dim); margin-bottom:22px; box-shadow:0 4px 14px rgba(0,0,0,0.04); }
+  .pill .dot{ width:6px; height:6px; border-radius:50%; background:var(--gold); }
+  h1{ font-family:var(--font-display); font-weight:800; font-size:clamp(2.4rem,5vw,3.5rem); line-height:1.1; margin-bottom:18px; color:var(--ink); }
+  h1 .accent{ color:var(--gold-deep); }
+  .lede{ color:var(--ink-dim); font-size:1.05rem; max-width:430px; margin-bottom:14px; }
+  .stars{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-dim); margin-bottom:30px; }
+  .stars .g{ color:var(--gold); letter-spacing:2px; }
+  .cta-row{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+  .btn{ font-family:var(--font-body); font-size:14px; font-weight:600; padding:14px 28px; border-radius:999px; border:none; cursor:pointer; transition:all .25s ease; display:inline-flex; align-items:center; gap:8px; }
+  .btn-gold{ background:var(--gold); color:#151107; }
+  .btn-gold:hover{ transform:translateY(-2px); box-shadow:0 10px 26px rgba(201,162,39,0.35); }
+  .btn-link{ color:var(--ink); font-weight:600; border-bottom:1px solid var(--ink); padding:4px 0; border-radius:0; }
+  .btn-outline{ background:transparent; border:1px solid var(--line-dark); color:var(--light-text); }
+  .btn-outline:hover{ border-color:var(--gold); color:var(--gold); }
+  .btn-outline-light{ background:transparent; border:1px solid var(--line-light); color:var(--ink); }
+  .btn-outline-light:hover{ border-color:var(--gold-deep); color:var(--gold-deep); }
+
+  .hero-visual{ position:relative; display:flex; align-items:center; justify-content:center; }
+  .blob{ position:absolute; width:360px; height:360px; border-radius:48% 52% 55% 45%/55% 45% 55% 45%; background:linear-gradient(150deg, var(--gold-soft), var(--gold)); opacity:.5; animation:blobm 9s ease-in-out infinite; }
+  @keyframes blobm{ 0%,100%{ border-radius:48% 52% 55% 45%/55% 45% 55% 45%; } 50%{ border-radius:55% 45% 48% 52%/48% 55% 45% 55%; } }
+  .avatar-card{ position:relative; width:270px; height:320px; border-radius:28px; background:var(--navy-900); display:flex; align-items:center; justify-content:center; box-shadow:0 30px 60px rgba(11,18,32,0.35); }
+  .avatar-initials{ font-family:var(--font-display); font-size:4.4rem; font-weight:800; color:var(--gold); }
+  .float-card{ position:absolute; background:#fff; border-radius:16px; padding:14px 18px; box-shadow:0 16px 34px rgba(0,0,0,0.12); font-size:13px; }
+  .float-card.top{ top:-6px; right:-24px; }
+  .float-card b{ display:block; font-family:var(--font-display); font-size:1.3rem; color:var(--ink); }
+  .float-card span{ color:var(--ink-dim); font-size:11px; }
+
+  /* section head */
+  .section-head{ margin-bottom:52px; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:20px; }
+  .kicker{ font-size:13px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:10px; }
+  .dark .kicker{ color:var(--gold); }
+  h2{ font-family:var(--font-display); font-size:clamp(1.8rem,3.2vw,2.3rem); font-weight:700; }
+  h2 .accent{ color:var(--gold-deep); }
+  .dark h2 .accent{ color:var(--gold); }
+  .see-all{ font-size:13px; font-weight:600; padding:10px 20px; border-radius:999px; background:var(--gold); color:#151107; }
+
+  /* carousel shared */
+  .carousel-viewport{ overflow:hidden; }
+  .carousel-track{ display:flex; transition: transform .45s ease; }
+  .ccard-page{ flex:0 0 100%; display:grid; gap:22px; }
+  .ccard-page.grid-3{ grid-template-columns:repeat(3,1fr); }
+  .ccard-page.grid-2{ grid-template-columns:repeat(2,1fr); }
+  @media (max-width:780px){ .ccard-page.grid-3, .ccard-page.grid-2{ grid-template-columns:1fr; } }
+  .dots{ display:flex; gap:6px; justify-content:center; margin-top:36px; }
+  .dots span{ width:7px; height:7px; border-radius:50%; background:var(--line-dark); cursor:pointer; }
+  .light .dots span, .altlight .dots span{ background:var(--line-light); }
+  .dots span.active{ background:var(--gold); width:22px; border-radius:4px; }
+
+  /* card edit controls (shared) */
+  .skill-controls, .card-controls{ display:none; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  body.edit-mode .skill-controls, body.edit-mode .card-controls{ display:flex; }
+  .drag-handle{ cursor:grab; font-size:13px; letter-spacing:2px; user-select:none; color:var(--light-dim); }
+  .card-controls .drag-handle{ color:var(--ink-dim); }
+  .card-delete{ background:none; border:none; cursor:pointer; font-size:15px; line-height:1; padding:2px 6px; border-radius:6px; color:var(--light-dim); }
+  .card-controls .card-delete{ color:var(--ink-dim); }
+  .card-delete:hover{ color:#F87171; background:rgba(248,113,113,0.1); }
+  .pct-row{ display:none; align-items:center; gap:10px; margin-top:12px; font-size:11px; color:var(--light-dim); }
+  body.edit-mode .pct-row{ display:flex; }
+  .pct-row input[type=range]{ flex:1; accent-color:var(--gold); }
+  .pct-row .pct-val{ min-width:32px; text-align:right; color:var(--gold); }
+  .add-card-btn{ display:none; margin:28px auto 0; }
+  body.edit-mode .add-card-btn{ display:inline-flex; }
+  .ccard.dragging{ opacity:0.35; }
+  .proj-card.has-link{ cursor:pointer; }
+
+  /* skills / services */
+  .skill-card{ background:var(--navy-800); border:1px solid var(--line-dark); border-radius:18px; padding:30px; position:relative; transition:transform .3s ease, border-color .3s; }
+  .skill-card:hover{ transform:translateY(-6px); border-color:var(--gold); }
+  .skill-num{ font-family:var(--font-display); font-size:13px; color:var(--gold); margin-bottom:16px; display:inline-block; }
+  .skill-card h3{ font-family:var(--font-display); font-size:1.2rem; margin-bottom:10px; color:#fff; }
+  .skill-card p{ color:var(--light-dim); font-size:0.92rem; margin-bottom:20px; }
+  .skill-bar{ height:4px; background:var(--line-dark); border-radius:2px; overflow:hidden; }
+  .skill-bar span{ display:block; height:100%; background:var(--gold); width:0; transition:width 1.2s ease; }
+  .skill-card.in .skill-bar span{ width:var(--pct); }
+
+  /* timeline */
+  .timeline{ position:relative; padding-left:28px; }
+  .timeline::before{ content:''; position:absolute; left:5px; top:6px; bottom:6px; width:2px; background:linear-gradient(var(--gold-deep), var(--line-light)); opacity:.5; }
+  .tl-item{ position:relative; padding-bottom:44px; display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .tl-item:last-child{ padding-bottom:0; }
+  .tl-dot{ position:absolute; left:-33px; top:2px; width:12px; height:12px; border-radius:50%; background:var(--paper); border:2px solid var(--gold-deep); }
+  .tl-item.current .tl-dot{ background:var(--gold); border-color:var(--gold); box-shadow:0 0 0 5px var(--gold-soft); }
+  .tl-title{ font-family:var(--font-display); font-weight:700; font-size:1.05rem; margin-bottom:4px; }
+  .tl-year{ font-size:12.5px; color:var(--ink-dim); }
+  .tl-sub{ color:var(--ink-dim); font-size:0.92rem; }
+  @media (max-width:640px){ .tl-item{ grid-template-columns:1fr; } }
+
+  /* why work with me */
+  .why-grid{ display:grid; grid-template-columns:0.8fr 1fr; gap:56px; align-items:center; }
+  @media (max-width:860px){ .why-grid{ grid-template-columns:1fr; } }
+  .why-card{ background:var(--navy-900); border-radius:26px; width:100%; max-width:320px; height:320px; display:flex; align-items:center; justify-content:center; position:relative; }
+  .why-card .avatar-initials{ color:var(--gold); }
+  .stat-pair{ display:flex; gap:44px; margin:26px 0; flex-wrap:wrap; }
+  .stat-pair b{ display:block; font-family:var(--font-display); font-size:2rem; color:var(--gold-deep); }
+  .stat-pair span{ font-size:12px; color:var(--ink-dim); }
+
+  /* project / work cards (light) */
+  .project-empty{ border:1px dashed var(--line-light); border-radius:22px; padding:60px 32px; text-align:center; background:#fff; }
+  .project-empty .glyph{ font-size:26px; color:var(--ink-dim); margin-bottom:16px; font-family:var(--font-display); }
+  .project-empty h3{ font-family:var(--font-display); font-size:1.3rem; margin-bottom:8px; }
+  .project-empty p{ color:var(--ink-dim); max-width:420px; margin:0 auto 22px; }
+  .proj-card{ background:#fff; border:1px solid var(--line-light); border-radius:18px; padding:28px; position:relative; transition:transform .3s ease, border-color .3s; }
+  .proj-card:hover{ transform:translateY(-6px); border-color:var(--gold-deep); }
+  .proj-card h3{ font-family:var(--font-display); font-size:1.15rem; margin-bottom:8px; color:var(--ink); }
+  .proj-card p{ color:var(--ink-dim); font-size:0.9rem; margin-bottom:16px; }
+  .card-top-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+  .card-num{ font-family:var(--font-display); font-size:12px; color:var(--gold-deep); }
+  .skill-card .card-num{ color:var(--gold); }
+  .card-year{ font-size:11px; background:var(--paper-alt); padding:4px 10px; border-radius:999px; color:var(--ink-dim); }
+  .card-link-row{ display:none; gap:6px; font-size:11.5px; color:var(--ink-dim); align-items:baseline; flex-wrap:wrap; }
+  body.edit-mode .card-link-row{ display:flex; }
+  .link-label{ font-weight:600; }
+  .card-link{ color:var(--gold-deep); word-break:break-all; }
+
+  /* recommendation cards (dark) */
+  .rec-card{ max-width:520px; margin:0 auto; text-align:center; background:var(--navy-800); border:1px dashed var(--line-dark); border-radius:20px; padding:44px 32px; }
+  .rec-card .glyph{ font-size:24px; color:var(--gold); margin-bottom:14px; }
+  .rec-card p{ color:var(--light-dim); }
+  .rec-card-item{ background:var(--navy-800); border:1px solid var(--line-dark); border-radius:18px; padding:28px; position:relative; }
+  .rec-name{ font-family:var(--font-display); font-size:1.1rem; color:#fff; margin-bottom:8px; }
+  .star-input{ display:flex; gap:4px; margin-bottom:14px; }
+  .star-input span{ color:var(--line-dark); font-size:16px; }
+  .star-input span.filled{ color:var(--gold); }
+  body.edit-mode .star-input span{ cursor:pointer; }
+  .rec-card-item p{ color:var(--light-dim); font-size:0.9rem; }
+
+  /* contact */
+  .contact-inner{ text-align:center; max-width:600px; margin:0 auto; }
+  .contact-inner h2{ margin-bottom:24px; }
+  .contact-form{ display:flex; gap:12px; background:#fff; border:1px solid var(--line-light); border-radius:999px; padding:8px; box-shadow:0 10px 30px rgba(0,0,0,0.05); }
+  .contact-form input{ flex:1; border:none; outline:none; padding:12px 18px; font-family:var(--font-body); font-size:14px; background:transparent; }
+  .marquee{ background:var(--gold); overflow:hidden; padding:16px 0; margin-top:70px; }
+  .marquee-track{ display:flex; gap:40px; white-space:nowrap; animation:scroll 22s linear infinite; font-family:var(--font-display); font-weight:700; font-size:14px; color:#151107; }
+  .marquee-track span::after{ content:'✦'; margin-left:40px; }
+  @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  /* footer */
+  footer{ padding:70px 0 30px; }
+  .footer-top{ display:grid; grid-template-columns:1.3fr 1fr 1fr 1.2fr; gap:40px; margin-bottom:50px; }
+  @media (max-width:860px){ .footer-top{ grid-template-columns:1fr 1fr; } }
+  .footer-brand{ font-family:var(--font-display); font-weight:700; font-size:1.3rem; color:#fff; margin-bottom:12px; }
+  .footer-top p{ color:var(--light-dim); font-size:13.5px; max-width:280px; }
+  .footer-col h4{ font-size:13px; text-transform:uppercase; letter-spacing:0.05em; color:var(--gold); margin-bottom:16px; }
+  .footer-col a, .footer-col div{ display:block; color:var(--light-dim); font-size:13.5px; margin-bottom:10px; }
+  .footer-col a:hover{ color:#fff; }
+  .news-input{ display:flex; margin-top:6px; border:1px solid var(--line-dark); border-radius:999px; overflow:hidden; }
+  .news-input input{ flex:1; background:transparent; border:none; outline:none; padding:10px 16px; color:#fff; font-size:13px; }
+  .news-input button{ background:var(--gold); border:none; padding:0 18px; color:#151107; cursor:pointer; }
+  .social-links{ margin-top:16px; display:flex; flex-direction:column; gap:10px; }
+  .social-link{ display:flex; align-items:center; gap:8px; color:var(--light-dim); font-size:13px; transition:color .2s; }
+  .social-link svg{ flex-shrink:0; }
+  .social-link:hover{ color:var(--gold); }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; border-top:1px solid var(--line-dark); padding-top:24px; font-size:12.5px; color:var(--light-dim); }
+
+  /* avatar upload */
+  .avatar-upload-overlay{ position:absolute; inset:0; border-radius:inherit; background:rgba(11,18,32,0.6); display:none; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:#fff; font-size:12.5px; cursor:pointer; text-align:center; z-index:2; }
+  body.edit-mode .avatar-card:hover .avatar-upload-overlay, body.edit-mode .why-card:hover .avatar-upload-overlay{ display:flex; }
+  .avatar-card img, .why-card img{ width:100%; height:100%; object-fit:cover; border-radius:inherit; display:none; position:absolute; inset:0; }
+  .avatar-card.has-image .avatar-initials, .why-card.has-image .avatar-initials{ display:none; }
+  .avatar-card.has-image img, .why-card.has-image img{ display:block; }
+
+  /* admin */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(10,11,18,0.7); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:1000; }
+  .modal-overlay.show{ display:flex; }
+  .modal{ background:var(--navy-900); border:1px solid var(--line-dark); border-radius:16px; padding:32px; width:320px; color:#fff; }
+  .modal h3{ font-family:var(--font-display); margin-bottom:6px; }
+  .modal p{ color:var(--light-dim); font-size:12.5px; margin-bottom:18px; }
+  .modal input{ width:100%; padding:11px 14px; border-radius:10px; border:1px solid var(--line-dark); background:var(--navy-800); color:#fff; margin-bottom:14px; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-error{ color:#F87171; font-size:12px; margin-top:-6px; margin-bottom:10px; display:none; }
+  body.edit-mode [contenteditable="true"]{ outline:1px dashed var(--gold); outline-offset:3px; border-radius:4px; cursor:text; }
+  .edit-toolbar{ position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:900; background:var(--navy-900); border:1px solid var(--gold); border-radius:14px; padding:12px 18px; display:none; align-items:center; gap:14px; font-size:12.5px; color:var(--gold); box-shadow:0 12px 32px rgba(0,0,0,0.5); }
+  .edit-toolbar.show{ display:flex; }
+  .edit-toolbar button{ padding:8px 16px; border-radius:999px; }
+  .edit-toolbar .save-msg{ color:#8FE3A0; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="navpill">
+    <div class="brand"><span class="mark">SS</span>Sainirnay</div>
+    <ul class="navlinks">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#work-exp">Work Exp</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-cta" id="navLoginBtn">Login</button>
+  </div>
+</div>
+
+<section class="hero light">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="pill"><span class="dot"></span>Hello</div>
+      <h1>I'm <span class="accent" contenteditable="false" data-key="name">Sainirnay</span>,<br>Electronics &amp; Computer Science Enthusiast</h1>
+      <p class="lede" contenteditable="false" data-key="lede">Building with Python, HTML and CSS — figuring out what to build next.</p>
+      <div class="stars"><span class="g">★★★★★</span><span contenteditable="false" data-key="tagline">Open to opportunities</span></div>
+      <div class="cta-row">
+        <a class="btn btn-gold" href="#projects">View my work →</a>
+        <a class="btn-link" href="#contact">Get in touch</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="blob"></div>
+      <div class="avatar-card" id="avatarCard">
+        <span class="avatar-initials">SS</span>
+        <img id="avatarImg" src="" alt="Profile photo">
+        <div class="avatar-upload-overlay" data-target="avatarCard">📷<br>Change photo</div>
+      </div>
+      <div class="float-card top">
+        <b contenteditable="false" data-key="hero-stat">1st Year</b>
+        <span contenteditable="false" data-key="hero-stat-label">BTech ECE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills" class="dark">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="kicker">What I do</div>
+        <h2>My <span class="accent">Skills</span></h2>
+      </div>
+    </div>
+    <div class="carousel-viewport reveal">
+      <div class="carousel-track" id="skillsTrack">
+        <div class="ccard-page grid-3">
+          <div class="ccard skill-card in" style="--pct:78%">
+            <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+            <span class="card-num skill-num">01</span>
+            <h3 contenteditable="false">Python</h3>
+            <p contenteditable="false">Main language for coursework, scripting and problem solving.</p>
+            <div class="skill-bar"><span></span></div>
+            <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="78" class="pct-slider"><span class="pct-val">78%</span></div>
+          </div>
+          <div class="ccard skill-card in" style="--pct:60%">
+            <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+            <span class="card-num skill-num">02</span>
+            <h3 contenteditable="false">HTML &amp; CSS</h3>
+            <p contenteditable="false">Comfortable structuring and styling pages — this site included.</p>
+            <div class="skill-bar"><span></span></div>
+            <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="60" class="pct-slider"><span class="pct-val">60%</span></div>
+          </div>
+          <div class="ccard skill-card in" style="--pct:35%">
+            <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+            <span class="card-num skill-num">03</span>
+            <h3 contenteditable="false">CS Fundamentals</h3>
+            <p contenteditable="false">Deepening data structures, algorithms and systems thinking.</p>
+            <div class="skill-bar"><span></span></div>
+            <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="35" class="pct-slider"><span class="pct-val">35%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-outline add-card-btn" id="addSkillBtn" type="button">+ Add skill</button>
+    <div class="dots" id="skillsDots"></div>
+  </div>
+</section>
+
+<section id="education" class="light">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="kicker">Journey</div>
+        <h2>My <span class="accent">Path So Far</span></h2>
+      </div>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div><div class="tl-title" contenteditable="false" data-key="edu1-title">Schooling</div><div class="tl-year" contenteditable="false" data-key="edu1-year">2014 — 2024</div></div>
+        <div class="tl-sub" contenteditable="false" data-key="edu1-sub">Excel Public School</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div><div class="tl-title" contenteditable="false" data-key="edu2-title">Pre-University</div><div class="tl-year" contenteditable="false" data-key="edu2-year">2024 — 2026</div></div>
+        <div class="tl-sub" contenteditable="false" data-key="edu2-sub">BASE PU College, Mysuru</div>
+      </div>
+      <div class="tl-item current">
+        <div class="tl-dot"></div>
+        <div><div class="tl-title" contenteditable="false" data-key="edu3-title">BTech, Electronics &amp; Communication Engineering</div><div class="tl-year" contenteditable="false" data-key="edu3-year">2026 — 2030</div></div>
+        <div class="tl-sub" contenteditable="false" data-key="edu3-sub">Manipal Institute of Technology</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="altlight">
+  <div class="wrap why-grid">
+    <div class="reveal" style="display:flex; justify-content:center;">
+      <div class="why-card" id="whyCard">
+        <span class="avatar-initials">SS</span>
+        <img id="whyImg" src="" alt="Profile photo">
+        <div class="avatar-upload-overlay" data-target="whyCard">📷<br>Change photo</div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="kicker">Motivation</div>
+      <h2>Why Work <span class="accent">With Me</span></h2>
+      <p class="lede" contenteditable="false" data-key="why-desc" style="margin-top:14px;">I bring genuine interest to everything I work on, treating each task as a chance to learn something new. I pick up new concepts quickly and apply them with real focus, turning everyday problems into everyday progress.</p>
+      <div class="stat-pair">
+        <div><b contenteditable="false" data-key="stat1">2026</b><span>Year Started</span></div>
+        <div><b contenteditable="false" data-key="stat2">1</b><span>Languages in Use</span></div>
+      </div>
+      <a class="btn btn-gold" href="#contact">Say hello →</a>
+    </div>
+  </div>
+</section>
+
+<section id="projects" class="light">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="kicker">Portfolio</div>
+        <h2>Let's Have a Look at <span class="accent">My Work</span></h2>
+      </div>
+      <a class="see-all" href="https://github.com/Sai-nirnay" target="_blank" rel="noopener">GitHub →</a>
+    </div>
+    <div class="project-empty reveal" id="projectsEmpty">
+      <div class="glyph">&lt;/&gt;</div>
+      <h3>No projects yet</h3>
+      <p>This space is reserved for what's next. Check back soon, or reach out if you'd like to build something together.</p>
+    </div>
+    <div class="carousel-viewport reveal">
+      <div class="carousel-track" id="projectsTrack"></div>
+    </div>
+    <button class="btn btn-outline-light add-card-btn" id="addProjectBtn" type="button">+ Add project</button>
+    <div class="dots" id="projectsDots"></div>
+  </div>
+</section>
+
+<section id="work-exp" class="altlight">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <div class="kicker">Career</div>
+        <h2>Work <span class="accent">Experience</span></h2>
+      </div>
+    </div>
+    <div class="project-empty reveal" id="workEmpty">
+      <div class="glyph">💼</div>
+      <h3>No work experience yet</h3>
+      <p>Haven't started working yet — this section will fill up once that changes. Open to internships and opportunities in the meantime.</p>
+    </div>
+    <div class="carousel-viewport reveal">
+      <div class="carousel-track" id="workTrack"></div>
+    </div>
+    <button class="btn btn-outline-light add-card-btn" id="addWorkBtn" type="button">+ Add experience</button>
+    <div class="dots" id="workDots"></div>
+  </div>
+</section>
+
+<section class="dark">
+  <div class="wrap">
+    <div class="section-head reveal" style="justify-content:center; text-align:center; display:block;">
+      <div class="kicker">Feedback</div>
+      <h2>Recommendations <span class="accent">Coming Soon</span></h2>
+    </div>
+    <div class="rec-card reveal" id="recEmpty">
+      <div class="glyph">✦</div>
+      <p>No recommendations yet — this section will fill up once I've had the chance to work with people. Reach out if you'd like to be first.</p>
+    </div>
+    <div class="carousel-viewport reveal">
+      <div class="carousel-track" id="recTrack"></div>
+    </div>
+    <button class="btn btn-outline add-card-btn" id="addRecBtn" type="button">+ Add recommendation</button>
+    <div class="dots" id="recDots"></div>
+  </div>
+</section>
+
+<section id="contact" class="light">
+  <div class="wrap contact-inner reveal">
+    <h2>Have a Project Idea? <span class="accent">Let's Discuss</span></h2>
+    <div class="contact-form">
+      <input type="email" placeholder="Enter email address" id="contactEmailInput">
+      <button class="btn btn-gold" id="contactSendBtn">Send</button>
+    </div>
+    <p id="contactMsg" style="font-size:12.5px; color:var(--ink-dim); margin-top:12px; display:none;"></p>
+  </div>
+  <div class="marquee">
+    <div class="marquee-track">
+      <span>Python</span><span>Web Dev</span><span>Data Structures</span><span>Problem Solving</span><span>Learning</span>
+      <span>Python</span><span>Web Dev</span><span>Data Structures</span><span>Problem Solving</span><span>Learning</span>
+    </div>
+  </div>
+</section>
+
+<footer class="dark">
+  <div class="wrap">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">Sainirnay Sanjee</div>
+        <p contenteditable="false" data-key="footer-desc">Electronics student building things one step at a time.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <a href="#skills">Skills</a>
+        <a href="#education">Education</a>
+        <a href="#projects">Projects</a>
+        <a href="#work-exp">Work Exp</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div contenteditable="false" data-key="footer-email" id="footerEmail">sanjeesainirnay@gmail.com</div>
+        <div contenteditable="false" data-key="footer-location">Mysuru, Karnataka</div>
+      </div>
+      <div class="footer-col">
+        <h4>Stay Updated</h4>
+        <div class="social-links">
+          <a href="https://github.com/Sai-nirnay" target="_blank" rel="noopener" class="social-link">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            <span>GitHub</span>
+          </a>
+          <a href="https://www.linkedin.com/in/sainirnay-sanjee/" target="_blank" rel="noopener" class="social-link">
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15zM4.75 6.02H2.4V13.6h2.35V6.02zM3.58 5.01c.82 0 1.33-.54 1.33-1.22-.01-.7-.51-1.23-1.31-1.23-.8 0-1.33.54-1.33 1.23 0 .68.51 1.22 1.3 1.22h.01zM13.6 13.6h-2.35V9.57c0-1.01-.36-1.7-1.26-1.7-.69 0-1.1.46-1.28.91-.07.16-.08.39-.08.62v4.2H6.28s.03-6.81 0-7.58h2.35v1.07c.31-.48.87-1.17 2.12-1.17 1.55 0 2.71 1.01 2.71 3.19v4.49z"/></svg>
+            <span>LinkedIn</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Sainirnay Sanjee. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+
+<div class="modal-overlay" id="loginOverlay">
+  <div class="modal">
+    <h3>Admin access</h3>
+    <p>Enter the password to edit page content.</p>
+    <input type="password" id="pwInput" placeholder="Password">
+    <div class="modal-error" id="pwError">Incorrect password.</div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" id="pwSubmit" style="flex:1; border-radius:10px;">Unlock</button>
+      <button class="btn btn-outline" id="pwCancel" style="flex:1; border-radius:10px;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="edit-toolbar" id="editToolbar">
+  <span>✎ Edit mode — click any dashed text to change it</span>
+  <button class="btn btn-gold" id="saveBtn">Save</button>
+  <button class="btn btn-outline" id="exitBtn">Exit</button>
+  <span class="save-msg" id="saveMsg" style="display:none;">Saved ✓</span>
+</div>
+
+<script>
+  const ADMIN_PASSWORD = "Prarash@9";
+
+  /* ---------- Supabase (real persistence) ----------
+     1. Create a free project at https://supabase.com
+     2. Run the SQL from the setup guide to create the 'portfolio_content' table
+     3. Paste your Project URL and anon public key below
+  ------------------------------------------------------ */
+  const SUPABASE_URL = "https://dbansqiddshxivbjhcwr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiYW5zcWlkZHNoeGl2YmpoY3dyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM2NjMwMTIsImV4cCI6MjA5OTIzOTAxMn0.toNDzg8nUVE1D_GiMClRohkGdHBWBZwdjQwhF3JbJ3I";
+  const supabaseClient = (SUPABASE_URL.startsWith('http') && window.supabase)
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
+  if(!supabaseClient){
+    console.warn('Supabase not configured yet — Save will only persist inside Claude\'s preview, not on a real hosted site. See the comment above SUPABASE_URL.');
+  }
+  const overlay = document.getElementById('loginOverlay');
+  const pwInput = document.getElementById('pwInput');
+  const pwError = document.getElementById('pwError');
+  const toolbar = document.getElementById('editToolbar');
+
+  const skillsTrack = document.getElementById('skillsTrack');
+  const skillsDots = document.getElementById('skillsDots');
+  const projectsTrack = document.getElementById('projectsTrack');
+  const projectsDots = document.getElementById('projectsDots');
+  const projectsEmpty = document.getElementById('projectsEmpty');
+  const workTrack = document.getElementById('workTrack');
+  const workDots = document.getElementById('workDots');
+  const workEmpty = document.getElementById('workEmpty');
+  const recTrack = document.getElementById('recTrack');
+  const recDots = document.getElementById('recDots');
+  const recEmpty = document.getElementById('recEmpty');
+
+  /* ---------- Login / edit mode ---------- */
+  function getEditableEls(){
+    return document.querySelectorAll('[data-key], .ccard h3, .ccard p, .card-year, .card-link');
+  }
+  document.getElementById('navLoginBtn').addEventListener('click', () => {
+    overlay.classList.add('show'); pwInput.value=''; pwError.style.display='none'; pwInput.focus();
+  });
+  document.getElementById('pwCancel').addEventListener('click', () => overlay.classList.remove('show'));
+
+  function enterEditMode(){
+    overlay.classList.remove('show');
+    document.body.classList.add('edit-mode');
+    getEditableEls().forEach(el => { if(el.tagName !== 'INPUT') el.setAttribute('contenteditable','true'); });
+    toolbar.classList.add('show');
+    document.getElementById('navLoginBtn').textContent = 'Editing…';
+  }
+  document.getElementById('pwSubmit').addEventListener('click', () => {
+    if(pwInput.value === ADMIN_PASSWORD){ enterEditMode(); } else { pwError.style.display='block'; }
+  });
+  pwInput.addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('pwSubmit').click(); });
+
+  document.getElementById('exitBtn').addEventListener('click', () => {
+    document.body.classList.remove('edit-mode');
+    getEditableEls().forEach(el => el.setAttribute('contenteditable','false'));
+    toolbar.classList.remove('show');
+    document.getElementById('navLoginBtn').textContent = 'Login';
+  });
+
+  /* ---------- Generic carousel engine ---------- */
+  function elFromHTML(html){ const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; }
+
+  function setCarouselPage(track, dotsEl, i){
+    track.dataset.page = i;
+    track.style.transform = `translateX(-${i * 100}%)`;
+    Array.from(dotsEl.children).forEach((d, idx) => d.classList.toggle('active', idx === i));
+  }
+
+  function reflowCarousel(track, dotsEl, groupSize, emptyEl){
+    const cards = Array.from(track.querySelectorAll('.ccard'));
+    track.innerHTML = '';
+    if(cards.length === 0){
+      dotsEl.innerHTML = '';
+      track.style.transform = 'translateX(0)';
+      if(emptyEl) emptyEl.style.display = '';
+      return;
+    }
+    if(emptyEl) emptyEl.style.display = 'none';
+    const pages = [];
+    for(let i = 0; i < cards.length; i += groupSize) pages.push(cards.slice(i, i + groupSize));
+    pages.forEach(pageCards => {
+      const pageEl = document.createElement('div');
+      pageEl.className = 'ccard-page grid-' + groupSize;
+      pageCards.forEach(c => pageEl.appendChild(c));
+      track.appendChild(pageEl);
+    });
+    dotsEl.innerHTML = '';
+    let current = Math.min(parseInt(track.dataset.page || '0'), pages.length - 1);
+    if(current < 0) current = 0;
+    pages.forEach((_, i) => {
+      const d = document.createElement('span');
+      d.addEventListener('click', () => setCarouselPage(track, dotsEl, i));
+      dotsEl.appendChild(d);
+    });
+    setCarouselPage(track, dotsEl, current);
+    cards.forEach((card, i) => {
+      const num = card.querySelector('.card-num');
+      if(num) num.textContent = String(i + 1).padStart(2, '0');
+    });
+  }
+
+  function goLastPage(track, dotsEl, groupSize){
+    const count = track.querySelectorAll('.ccard').length;
+    const pages = Math.max(1, Math.ceil(count / groupSize));
+    setCarouselPage(track, dotsEl, pages - 1);
+  }
+
+  function attachDragover(track){
+    track.addEventListener('dragover', e => {
+      e.preventDefault();
+      const pageIdx = parseInt(track.dataset.page || '0');
+      const activePage = track.children[pageIdx];
+      const dragging = track.querySelector('.dragging');
+      if(!activePage || !dragging || dragging.parentElement !== activePage) return;
+      const after = [...activePage.querySelectorAll('.ccard:not(.dragging)')].find(el => {
+        const box = el.getBoundingClientRect();
+        return e.clientX <= box.left + box.width / 2;
+      });
+      if(after) activePage.insertBefore(dragging, after);
+      else activePage.appendChild(dragging);
+    });
+  }
+
+  function wireCommonControls(card, track, dotsEl, groupSize, emptyEl){
+    const delBtn = card.querySelector('.card-delete');
+    if(delBtn) delBtn.addEventListener('click', () => {
+      card.remove();
+      reflowCarousel(track, dotsEl, groupSize, emptyEl);
+    });
+    card.setAttribute('draggable', 'true');
+    card.addEventListener('dragstart', () => card.classList.add('dragging'));
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      reflowCarousel(track, dotsEl, groupSize, emptyEl);
+    });
+    if(document.body.classList.contains('edit-mode')){
+      card.querySelectorAll('h3, p, .card-year, .card-link').forEach(f => f.setAttribute('contenteditable', 'true'));
+    }
+  }
+
+  function wireSkillExtra(card){
+    const slider = card.querySelector('.pct-slider');
+    const pctVal = card.querySelector('.pct-val');
+    slider.addEventListener('input', () => {
+      card.style.setProperty('--pct', slider.value + '%');
+      card.classList.add('in');
+      pctVal.textContent = slider.value + '%';
+    });
+  }
+
+  function wireLinkExtra(card){
+    function refreshLinkState(){
+      const linkEl = card.querySelector('.card-link');
+      const url = linkEl.textContent.trim();
+      const hasLink = url && !url.toLowerCase().includes('add link');
+      card.classList.toggle('has-link', hasLink);
+    }
+    refreshLinkState();
+    card.querySelector('.card-link').addEventListener('input', refreshLinkState);
+    card.querySelector('.card-link').addEventListener('blur', refreshLinkState);
+    card.addEventListener('click', (e) => {
+      if(document.body.classList.contains('edit-mode')) return;
+      if(e.target.closest('.card-controls')) return;
+      let url = card.querySelector('.card-link').textContent.trim();
+      if(!url || url.toLowerCase().includes('add link')) return;
+      if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+      window.open(url, '_blank', 'noopener');
+    });
+  }
+
+  function wireStarsExtra(card){
+    const starWrap = card.querySelector('.star-input');
+    const stars = starWrap.querySelectorAll('span');
+    stars.forEach((s, i) => {
+      s.addEventListener('click', () => {
+        if(!document.body.classList.contains('edit-mode')) return;
+        const rating = i + 1;
+        starWrap.setAttribute('data-rating', rating);
+        stars.forEach((st, idx) => st.classList.toggle('filled', idx < rating));
+      });
+    });
+  }
+
+  /* ---------- Card templates ---------- */
+  function skillCardHTML(title, desc, pct){
+    return `<div class="ccard skill-card in" style="--pct:${pct}%">
+      <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+      <span class="card-num skill-num">01</span>
+      <h3 contenteditable="false">${title}</h3>
+      <p contenteditable="false">${desc}</p>
+      <div class="skill-bar"><span></span></div>
+      <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="${pct}" class="pct-slider"><span class="pct-val">${pct}%</span></div>
+    </div>`;
+  }
+  function projCardHTML(title, year, desc, link){
+    return `<div class="ccard proj-card">
+      <div class="card-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+      <div class="card-top-row"><span class="card-num">01</span><span class="card-year" contenteditable="false">${year}</span></div>
+      <h3 contenteditable="false">${title}</h3>
+      <p contenteditable="false">${desc}</p>
+      <div class="card-link-row"><span class="link-label">Link:</span><span class="card-link" contenteditable="false">${link || 'Add link (optional)'}</span></div>
+    </div>`;
+  }
+  function recCardHTML(name, rating, desc){
+    const stars = [1,2,3,4,5].map(i => `<span class="${i <= rating ? 'filled' : ''}">★</span>`).join('');
+    return `<div class="ccard rec-card-item">
+      <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+      <h3 class="rec-name" contenteditable="false">${name}</h3>
+      <div class="star-input" data-rating="${rating}">${stars}</div>
+      <p contenteditable="false">${desc}</p>
+    </div>`;
+  }
+
+  /* ---------- Add-card functions ---------- */
+  function addSkillCard(title, desc, pct, focus){
+    const el = elFromHTML(skillCardHTML(title, desc, pct));
+    skillsTrack.appendChild(el);
+    wireCommonControls(el, skillsTrack, skillsDots, 3, null);
+    wireSkillExtra(el);
+    reflowCarousel(skillsTrack, skillsDots, 3, null);
+    if(focus){ goLastPage(skillsTrack, skillsDots, 3); el.querySelector('h3').focus(); }
+    return el;
+  }
+  function addProjectCard(title, year, desc, link, focus){
+    const el = elFromHTML(projCardHTML(title, year, desc, link));
+    projectsTrack.appendChild(el);
+    wireCommonControls(el, projectsTrack, projectsDots, 2, projectsEmpty);
+    wireLinkExtra(el);
+    reflowCarousel(projectsTrack, projectsDots, 2, projectsEmpty);
+    if(focus){ goLastPage(projectsTrack, projectsDots, 2); el.querySelector('h3').focus(); }
+    return el;
+  }
+  function addWorkCard(title, year, desc, link, focus){
+    const el = elFromHTML(projCardHTML(title, year, desc, link));
+    workTrack.appendChild(el);
+    wireCommonControls(el, workTrack, workDots, 2, workEmpty);
+    wireLinkExtra(el);
+    reflowCarousel(workTrack, workDots, 2, workEmpty);
+    if(focus){ goLastPage(workTrack, workDots, 2); el.querySelector('h3').focus(); }
+    return el;
+  }
+  function addRecCard(name, rating, desc, focus){
+    const el = elFromHTML(recCardHTML(name, rating, desc));
+    recTrack.appendChild(el);
+    wireCommonControls(el, recTrack, recDots, 2, recEmpty);
+    wireStarsExtra(el);
+    reflowCarousel(recTrack, recDots, 2, recEmpty);
+    if(focus){ goLastPage(recTrack, recDots, 2); el.querySelector('.rec-name').focus(); }
+    return el;
+  }
+
+  document.getElementById('addSkillBtn').addEventListener('click', () => addSkillCard('New skill', 'Describe this skill here.', 50, true));
+  document.getElementById('addProjectBtn').addEventListener('click', () => addProjectCard('Project title', '2026', 'Describe the project...', '', true));
+  document.getElementById('addWorkBtn').addEventListener('click', () => addWorkCard('Role / Position', '2026', 'Describe your responsibilities...', '', true));
+  document.getElementById('addRecBtn').addEventListener('click', () => addRecCard('Reviewer name', 5, 'What did they say about working with you?', true));
+
+  /* ---------- Initial wiring + first reflow ---------- */
+  Array.from(skillsTrack.querySelectorAll('.ccard')).forEach(c => { wireCommonControls(c, skillsTrack, skillsDots, 3, null); wireSkillExtra(c); });
+  attachDragover(skillsTrack);
+  attachDragover(projectsTrack);
+  attachDragover(workTrack);
+  attachDragover(recTrack);
+  reflowCarousel(skillsTrack, skillsDots, 3, null);
+  reflowCarousel(projectsTrack, projectsDots, 2, projectsEmpty);
+  reflowCarousel(workTrack, workDots, 2, workEmpty);
+  reflowCarousel(recTrack, recDots, 2, recEmpty);
+
+  /* ---------- Data extraction / restoration ---------- */
+  function getSkillsData(){
+    return Array.from(skillsTrack.querySelectorAll('.ccard')).map(c => ({
+      title: c.querySelector('h3').innerHTML,
+      desc: c.querySelector('p').innerHTML,
+      pct: c.querySelector('.pct-slider').value
+    }));
+  }
+  function getProjLikeData(track){
+    return Array.from(track.querySelectorAll('.ccard')).map(c => ({
+      title: c.querySelector('h3').innerHTML,
+      year: c.querySelector('.card-year').innerHTML,
+      desc: c.querySelector('p').innerHTML,
+      link: c.querySelector('.card-link').innerHTML
+    }));
+  }
+  function getRecsData(){
+    return Array.from(recTrack.querySelectorAll('.ccard')).map(c => ({
+      name: c.querySelector('.rec-name').innerHTML,
+      rating: c.querySelector('.star-input').getAttribute('data-rating'),
+      desc: c.querySelector('p').innerHTML
+    }));
+  }
+  function setSkillsData(arr){ skillsTrack.innerHTML = ''; arr.forEach(d => addSkillCard(d.title, d.desc, d.pct, false)); }
+  function setProjLikeData(track, dotsEl, emptyEl, arr, addFn){ track.innerHTML = ''; arr.forEach(d => addFn(d.title, d.year, d.desc, d.link, false)); }
+  function setRecsData(arr){ recTrack.innerHTML = ''; arr.forEach(d => addRecCard(d.name, d.rating, d.desc, false)); }
+
+  /* ---------- Avatar upload ---------- */
+  const avatarFileInput = document.getElementById('avatarFileInput');
+  let uploadTargetId = null;
+
+  document.querySelectorAll('.avatar-upload-overlay').forEach(overlayEl => {
+    overlayEl.addEventListener('click', () => {
+      uploadTargetId = overlayEl.getAttribute('data-target');
+      avatarFileInput.click();
+    });
+  });
+
+  function applyAvatarImage(targetId, dataUrl){
+    const card = document.getElementById(targetId);
+    const img = card.querySelector('img');
+    img.src = dataUrl;
+    card.classList.add('has-image');
+    ['avatarCard', 'whyCard'].forEach(id => {
+      if(id !== targetId){
+        const other = document.getElementById(id);
+        const otherImg = other.querySelector('img');
+        otherImg.src = dataUrl;
+        other.classList.add('has-image');
+      }
+    });
+  }
+
+  avatarFileInput.addEventListener('change', () => {
+    const file = avatarFileInput.files[0];
+    if(!file || !uploadTargetId) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 480;
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        applyAvatarImage(uploadTargetId, resizedDataUrl);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* ---------- Save / load everything ---------- */
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    const textContent = {};
+    document.querySelectorAll('[data-key]').forEach(el => { if(el.tagName !== 'INPUT') textContent[el.getAttribute('data-key')] = el.innerHTML; });
+    const avatarImg = document.getElementById('avatarImg');
+    const state = {
+      textContent,
+      skills: getSkillsData(),
+      projects: getProjLikeData(projectsTrack),
+      workExp: getProjLikeData(workTrack),
+      recs: getRecsData(),
+      avatarImage: avatarImg.src && avatarImg.src.startsWith('data:') ? avatarImg.src : null
+    };
+    const msg = document.getElementById('saveMsg');
+    try{
+      if(supabaseClient){
+        const { error } = await supabaseClient
+          .from('portfolio_content')
+          .upsert({ key: 'portfolio-state-v2', value: state, updated_at: new Date().toISOString() });
+        if(error) throw error;
+        msg.textContent = 'Saved ✓';
+      } else if(window.storage && window.storage.set){
+        await window.storage.set('portfolio-state-v2', JSON.stringify(state), false);
+        msg.textContent = 'Saved (Claude preview only)';
+      } else {
+        msg.textContent = 'Kept for this session only';
+      }
+    }catch(err){
+      console.error(err);
+      msg.textContent = 'Save failed — check Supabase setup';
+    }
+    msg.style.display = 'inline'; setTimeout(() => { msg.style.display = 'none'; }, 2200);
+  });
+
+  (async () => {
+    try{
+      let state = null;
+      if(supabaseClient){
+        const { data, error } = await supabaseClient
+          .from('portfolio_content')
+          .select('value')
+          .eq('key', 'portfolio-state-v2')
+          .maybeSingle();
+        if(!error && data) state = data.value;
+      } else if(window.storage && window.storage.get){
+        const res = await window.storage.get('portfolio-state-v2');
+        if(res && res.value) state = JSON.parse(res.value);
+      }
+      if(state){
+        if(state.textContent){
+          Object.entries(state.textContent).forEach(([key, html]) => {
+            const el = document.querySelector('[data-key="' + key + '"]');
+            if(el && el.tagName !== 'INPUT') el.innerHTML = html;
+          });
+        }
+        if(state.skills) setSkillsData(state.skills);
+        if(state.projects) setProjLikeData(projectsTrack, projectsDots, projectsEmpty, state.projects, addProjectCard);
+        if(state.workExp) setProjLikeData(workTrack, workDots, workEmpty, state.workExp, addWorkCard);
+        if(state.recs) setRecsData(state.recs);
+        if(state.avatarImage) applyAvatarImage('avatarCard', state.avatarImage);
+      }
+    }catch(err){ console.error(err); }
+  })();
+
+  /* ---------- Contact + newsletter buttons ---------- */
+  document.getElementById('contactSendBtn').addEventListener('click', () => {
+    const input = document.getElementById('contactEmailInput');
+    const msgEl = document.getElementById('contactMsg');
+    const visitorEmail = input.value.trim();
+    const ownerEmail = document.getElementById('footerEmail').textContent.trim();
+    if(!visitorEmail || !/^\S+@\S+\.\S+$/.test(visitorEmail)){
+      msgEl.textContent = 'Please enter a valid email address.';
+      msgEl.style.color = '#C0392B';
+      msgEl.style.display = 'block';
+      return;
+    }
+    const subject = encodeURIComponent('Project inquiry');
+    const body = encodeURIComponent('Hi, my email is ' + visitorEmail + '.\n\nI would like to discuss...');
+    window.location.href = `mailto:${ownerEmail}?subject=${subject}&body=${body}`;
+    msgEl.textContent = 'Opening your email app…';
+    msgEl.style.color = 'var(--ink-dim)';
+    msgEl.style.display = 'block';
+  });
+
+  /* ---------- Scroll reveal ---------- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
