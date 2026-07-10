@@ -2,7 +2,7 @@
 
 A single-file, self-editable personal portfolio website. No build tools, no framework, no backend server required — just one HTML file that anyone can host anywhere.
 
-**Live demo:** _[add your Vercel/Netlify URL here once deployed](https://sainirnay-sanjee.vercel.app/)_
+**Live demo:** _[Sainirnay Sanjee Webfolio](https://sainirnay-sanjee.vercel.app/)_
 
 ---
 
