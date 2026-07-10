@@ -482,9 +482,10 @@
 <div class="modal-overlay" id="loginOverlay">
   <div class="modal">
     <h3>Admin access</h3>
-    <p>Enter the password to edit page content.</p>
-    <input type="password" id="pwInput" placeholder="Password">
-    <div class="modal-error" id="pwError">Incorrect password.</div>
+    <p>Log in with your admin email and password.</p>
+    <input type="email" id="emailInput" placeholder="Email" autocomplete="username">
+    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password">
+    <div class="modal-error" id="pwError">Incorrect email or password.</div>
     <div class="modal-actions">
       <button class="btn btn-gold" id="pwSubmit" style="flex:1; border-radius:10px;">Unlock</button>
       <button class="btn btn-outline" id="pwCancel" style="flex:1; border-radius:10px;">Cancel</button>
@@ -500,7 +501,7 @@
 </div>
 
 <script>
-  const ADMIN_PASSWORD = "Prarash_9";
+  const FALLBACK_PASSWORD = "Prarash@9";
 
   /* ---------- Supabase (real persistence) ----------
      1. Create a free project at https://supabase.com
@@ -536,8 +537,11 @@
   function getEditableEls(){
     return document.querySelectorAll('[data-key], .ccard h3, .ccard p, .card-year, .card-link');
   }
+  const emailInput = document.getElementById('emailInput');
+
   document.getElementById('navLoginBtn').addEventListener('click', () => {
-    overlay.classList.add('show'); pwInput.value=''; pwError.style.display='none'; pwInput.focus();
+    if(document.body.classList.contains('edit-mode')) return;
+    overlay.classList.add('show'); emailInput.value=''; pwInput.value=''; pwError.style.display='none'; emailInput.focus();
   });
   document.getElementById('pwCancel').addEventListener('click', () => overlay.classList.remove('show'));
 
@@ -548,17 +552,39 @@
     toolbar.classList.add('show');
     document.getElementById('navLoginBtn').textContent = 'Editing…';
   }
-  document.getElementById('pwSubmit').addEventListener('click', () => {
-    if(pwInput.value === ADMIN_PASSWORD){ enterEditMode(); } else { pwError.style.display='block'; }
-  });
-  pwInput.addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('pwSubmit').click(); });
 
-  document.getElementById('exitBtn').addEventListener('click', () => {
+  async function attemptLogin(){
+    pwError.style.display = 'none';
+    if(supabaseClient){
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email: emailInput.value.trim(),
+        password: pwInput.value
+      });
+      if(error){ pwError.textContent = 'Incorrect email or password.'; pwError.style.display = 'block'; return; }
+      enterEditMode();
+    } else {
+      if(pwInput.value === FALLBACK_PASSWORD){ enterEditMode(); }
+      else { pwError.textContent = 'Incorrect password.'; pwError.style.display = 'block'; }
+    }
+  }
+  document.getElementById('pwSubmit').addEventListener('click', attemptLogin);
+  pwInput.addEventListener('keydown', e => { if(e.key === 'Enter') attemptLogin(); });
+  emailInput.addEventListener('keydown', e => { if(e.key === 'Enter') pwInput.focus(); });
+
+  document.getElementById('exitBtn').addEventListener('click', async () => {
     document.body.classList.remove('edit-mode');
     getEditableEls().forEach(el => el.setAttribute('contenteditable','false'));
     toolbar.classList.remove('show');
     document.getElementById('navLoginBtn').textContent = 'Login';
+    if(supabaseClient) await supabaseClient.auth.signOut();
   });
+
+  (async () => {
+    if(supabaseClient){
+      const { data } = await supabaseClient.auth.getSession();
+      if(data && data.session) enterEditMode();
+    }
+  })();
 
   /* ---------- Generic carousel engine ---------- */
   function elFromHTML(html){ const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstElementChild; }
