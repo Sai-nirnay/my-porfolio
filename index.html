@@ -114,7 +114,10 @@
   body.edit-mode .add-card-btn{ display:inline-flex; }
   .ccard.dragging{ opacity:0.35; }
   .proj-card.has-link{ cursor:pointer; }
-
+  [contenteditable]:empty:before{ content: attr(data-placeholder); pointer-events:none; }
+  .proj-card [contenteditable]:empty:before{ color:var(--ink-dim); opacity:0.6; }
+  .skill-card [contenteditable]:empty:before, .rec-card-item [contenteditable]:empty:before{ color:var(--light-dim); opacity:0.6; }
+  
   /* skills / services */
   .skill-card{ background:var(--navy-800); border:1px solid var(--line-dark); border-radius:18px; padding:30px; position:relative; transition:transform .3s ease, border-color .3s; }
   .skill-card:hover{ transform:translateY(-6px); border-color:var(--gold); }
@@ -285,24 +288,24 @@
           <div class="ccard skill-card in" style="--pct:78%">
             <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
             <span class="card-num skill-num">01</span>
-            <h3 contenteditable="false">Python</h3>
-            <p contenteditable="false">Main language for coursework, scripting and problem solving.</p>
+            <h3 contenteditable="false" data-placeholder="Skill name">Python</h3>
+            <p contenteditable="false" data-placeholder="Describe this skill...">Main language for coursework, scripting and problem solving.</p>
             <div class="skill-bar"><span></span></div>
             <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="78" class="pct-slider"><span class="pct-val">78%</span></div>
           </div>
           <div class="ccard skill-card in" style="--pct:60%">
             <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
             <span class="card-num skill-num">02</span>
-            <h3 contenteditable="false">HTML &amp; CSS</h3>
-            <p contenteditable="false">Comfortable structuring and styling pages — this site included.</p>
+            <h3 contenteditable="false" data-placeholder="Skill name">HTML &amp; CSS</h3>
+            <p contenteditable="false" data-placeholder="Describe this skill...">Comfortable structuring and styling pages — this site included.</p>
             <div class="skill-bar"><span></span></div>
             <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="60" class="pct-slider"><span class="pct-val">60%</span></div>
           </div>
           <div class="ccard skill-card in" style="--pct:35%">
             <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
             <span class="card-num skill-num">03</span>
-            <h3 contenteditable="false">CS Fundamentals</h3>
-            <p contenteditable="false">Deepening data structures, algorithms and systems thinking.</p>
+            <h3 contenteditable="false" data-placeholder="Skill name">CS Fundamentals</h3>
+            <p contenteditable="false" data-placeholder="Describe this skill...">Deepening data structures, algorithms and systems thinking.</p>
             <div class="skill-bar"><span></span></div>
             <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="35" class="pct-slider"><span class="pct-val">35%</span></div>
           </div>
@@ -654,22 +657,40 @@
     });
   }
 
-  function wireCommonControls(card, track, dotsEl, groupSize, emptyEl){
-    const delBtn = card.querySelector('.card-delete');
-    if(delBtn) delBtn.addEventListener('click', () => {
-      card.remove();
-      reflowCarousel(track, dotsEl, groupSize, emptyEl);
-    });
-    card.setAttribute('draggable', 'true');
-    card.addEventListener('dragstart', () => card.classList.add('dragging'));
-    card.addEventListener('dragend', () => {
-      card.classList.remove('dragging');
-      reflowCarousel(track, dotsEl, groupSize, emptyEl);
-    });
-    if(document.body.classList.contains('edit-mode')){
-      card.querySelectorAll('h3, p, .card-year, .card-link').forEach(f => f.setAttribute('contenteditable', 'true'));
-    }
+  function sanitizeField(el){
+  const text = el.textContent;
+  if(text.trim() === ''){
+    el.innerHTML = '';
+  } else if(el.innerHTML !== text){
+    el.textContent = text;
   }
+}
+function wireFieldHygiene(el){
+  el.addEventListener('paste', e => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+    document.execCommand('insertText', false, text);
+  });
+  el.addEventListener('blur', () => sanitizeField(el));
+}
+
+function wireCommonControls(card, track, dotsEl, groupSize, emptyEl){
+  const delBtn = card.querySelector('.card-delete');
+  if(delBtn) delBtn.addEventListener('click', () => {
+    card.remove();
+    reflowCarousel(track, dotsEl, groupSize, emptyEl);
+  });
+  card.setAttribute('draggable', 'true');
+  card.addEventListener('dragstart', () => card.classList.add('dragging'));
+  card.addEventListener('dragend', () => {
+    card.classList.remove('dragging');
+    reflowCarousel(track, dotsEl, groupSize, emptyEl);
+  });
+  card.querySelectorAll('h3, p, .card-year, .card-link').forEach(f => {
+    wireFieldHygiene(f);
+    if(document.body.classList.contains('edit-mode')) f.setAttribute('contenteditable', 'true');
+  });
+}
 
   function wireSkillExtra(card){
     const slider = card.querySelector('.pct-slider');
@@ -719,8 +740,8 @@
     return `<div class="ccard skill-card in" style="--pct:${pct}%">
       <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
       <span class="card-num skill-num">01</span>
-      <h3 contenteditable="false">${title}</h3>
-      <p contenteditable="false">${desc}</p>
+      <h3 contenteditable="false" data-placeholder="Skill name">${title}</h3>
+      <p contenteditable="false" data-placeholder="Describe this skill...">${desc}</p>
       <div class="skill-bar"><span></span></div>
       <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="${pct}" class="pct-slider"><span class="pct-val">${pct}%</span></div>
     </div>`;
@@ -728,22 +749,21 @@
   function projCardHTML(title, year, desc, link){
     return `<div class="ccard proj-card">
       <div class="card-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
-      <div class="card-top-row"><span class="card-num">01</span><span class="card-year" contenteditable="false">${year}</span></div>
-      <h3 contenteditable="false">${title}</h3>
-      <p contenteditable="false">${desc}</p>
-      <div class="card-link-row"><span class="link-label">Link:</span><span class="card-link" contenteditable="false">${link || 'Add link (optional)'}</span></div>
+      <div class="card-top-row"><span class="card-num">01</span><span class="card-year" contenteditable="false" data-placeholder="Year">${year}</span></div>
+      <h3 contenteditable="false" data-placeholder="Project title">${title}</h3>
+      <p contenteditable="false" data-placeholder="Describe the project...">${desc}</p>
+      <div class="card-link-row"><span class="link-label">Link:</span><span class="card-link" contenteditable="false" data-placeholder="Add link (optional)">${link || ''}</span></div>
     </div>`;
   }
   function recCardHTML(name, rating, desc){
     const stars = [1,2,3,4,5].map(i => `<span class="${i <= rating ? 'filled' : ''}">★</span>`).join('');
     return `<div class="ccard rec-card-item">
       <div class="skill-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
-      <h3 class="rec-name" contenteditable="false">${name}</h3>
+      <h3 class="rec-name" contenteditable="false" data-placeholder="Reviewer name">${name}</h3>
       <div class="star-input" data-rating="${rating}">${stars}</div>
-      <p contenteditable="false">${desc}</p>
+      <p contenteditable="false" data-placeholder="What did they say?">${desc}</p>
     </div>`;
   }
-
   /* ---------- Add-card functions ---------- */
   function addSkillCard(title, desc, pct, focus){
     const el = elFromHTML(skillCardHTML(title, desc, pct));
@@ -782,10 +802,10 @@
     return el;
   }
 
-  document.getElementById('addSkillBtn').addEventListener('click', () => addSkillCard('New skill', 'Describe this skill here.', 50, true));
-  document.getElementById('addProjectBtn').addEventListener('click', () => addProjectCard('Project title', '2026', 'Describe the project...', '', true));
-  document.getElementById('addWorkBtn').addEventListener('click', () => addWorkCard('Role / Position', '2026', 'Describe your responsibilities...', '', true));
-  document.getElementById('addRecBtn').addEventListener('click', () => addRecCard('Reviewer name', 5, 'What did they say about working with you?', true));
+  document.getElementById('addSkillBtn').addEventListener('click', () => addSkillCard('', '', 50, true));
+  document.getElementById('addProjectBtn').addEventListener('click', () => addProjectCard('', '', '', '', true));
+  document.getElementById('addWorkBtn').addEventListener('click', () => addWorkCard('', '', '', '', true));
+  document.getElementById('addRecBtn').addEventListener('click', () => addRecCard('', 5, '', true));
 
   /* ---------- Initial wiring + first reflow ---------- */
   Array.from(skillsTrack.querySelectorAll('.ccard')).forEach(c => { wireCommonControls(c, skillsTrack, skillsDots, 3, null); wireSkillExtra(c); });
@@ -797,6 +817,7 @@
   reflowCarousel(projectsTrack, projectsDots, 2, projectsEmpty);
   reflowCarousel(workTrack, workDots, 2, workEmpty);
   reflowCarousel(recTrack, recDots, 2, recEmpty);
+  document.querySelectorAll('[data-key]').forEach(el => { if(el.tagName !== 'INPUT') wireFieldHygiene(el); });
 
   /* ---------- Data extraction / restoration ---------- */
   function getSkillsData(){
