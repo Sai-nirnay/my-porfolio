@@ -117,6 +117,7 @@
   [contenteditable]:empty:before{ content: attr(data-placeholder); pointer-events:none; }
   .proj-card [contenteditable]:empty:before{ color:var(--ink-dim); opacity:0.6; }
   .skill-card [contenteditable]:empty:before, .rec-card-item [contenteditable]:empty:before{ color:var(--light-dim); opacity:0.6; }
+  p[contenteditable]{ white-space:pre-wrap; }
   
   /* skills / services */
   .skill-card{ background:var(--navy-800); border:1px solid var(--line-dark); border-radius:18px; padding:30px; position:relative; transition:transform .3s ease, border-color .3s; }
@@ -658,39 +659,62 @@
   }
 
   function sanitizeField(el){
-  const text = el.textContent;
-  if(text.trim() === ''){
-    el.innerHTML = '';
-  } else if(el.innerHTML !== text){
-    el.textContent = text;
+    const text = el.textContent;
+    if(text.trim() === ''){
+      el.innerHTML = '';
+    } else if(el.innerHTML !== text){
+      el.textContent = text;
+    }
   }
-}
-function wireFieldHygiene(el){
-  el.addEventListener('paste', e => {
-    e.preventDefault();
-    const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-    document.execCommand('insertText', false, text);
-  });
-  el.addEventListener('blur', () => sanitizeField(el));
-}
+  function sanitizeMultilineField(el){
+    if(el.textContent.trim() === ''){ el.innerHTML = ''; return; }
+    let html = el.innerHTML
+      .replace(/<div><br\s*\/?><\/div>/gi, '<br>')
+      .replace(/<\/div>\s*<div>/gi, '<br>')
+      .replace(/<div>/gi, '').replace(/<\/div>/gi, '<br>')
+      .replace(/<\/p>\s*<p>/gi, '<br>')
+      .replace(/<p>/gi, '').replace(/<\/p>/gi, '<br>')
+      .replace(/<(?!br\s*\/?>)[^>]+>/gi, '');
+    html = html.replace(/^(<br\s*\/?>)+/i, '').replace(/(<br\s*\/?>)+$/i, '');
+    el.innerHTML = html;
+  }
+  function wireFieldHygiene(el, opts){
+    const multiline = !!(opts && opts.multiline);
+    el.addEventListener('paste', e => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      document.execCommand('insertText', false, multiline ? text : text.replace(/\r?\n/g, ' '));
+    });
+    if(multiline){
+      el.addEventListener('keydown', e => {
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          document.execCommand('insertLineBreak');
+        }
+      });
+      el.addEventListener('blur', () => sanitizeMultilineField(el));
+    } else {
+      el.addEventListener('blur', () => sanitizeField(el));
+    }
+  }
 
-function wireCommonControls(card, track, dotsEl, groupSize, emptyEl){
-  const delBtn = card.querySelector('.card-delete');
-  if(delBtn) delBtn.addEventListener('click', () => {
-    card.remove();
-    reflowCarousel(track, dotsEl, groupSize, emptyEl);
-  });
-  card.setAttribute('draggable', 'true');
-  card.addEventListener('dragstart', () => card.classList.add('dragging'));
-  card.addEventListener('dragend', () => {
-    card.classList.remove('dragging');
-    reflowCarousel(track, dotsEl, groupSize, emptyEl);
-  });
-  card.querySelectorAll('h3, p, .card-year, .card-link').forEach(f => {
-    wireFieldHygiene(f);
-    if(document.body.classList.contains('edit-mode')) f.setAttribute('contenteditable', 'true');
-  });
-}
+  function wireCommonControls(card, track, dotsEl, groupSize, emptyEl){
+    const delBtn = card.querySelector('.card-delete');
+    if(delBtn) delBtn.addEventListener('click', () => {
+      card.remove();
+      reflowCarousel(track, dotsEl, groupSize, emptyEl);
+    });
+    card.setAttribute('draggable', 'true');
+    card.addEventListener('dragstart', () => card.classList.add('dragging'));
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      reflowCarousel(track, dotsEl, groupSize, emptyEl);
+    });
+    card.querySelectorAll('h3, p, .card-year, .card-link').forEach(f => {
+      wireFieldHygiene(f, { multiline: f.tagName === 'P' });
+      if(document.body.classList.contains('edit-mode')) f.setAttribute('contenteditable', 'true');
+    });
+  }
 
   function wireSkillExtra(card){
     const slider = card.querySelector('.pct-slider');
@@ -817,7 +841,7 @@ function wireCommonControls(card, track, dotsEl, groupSize, emptyEl){
   reflowCarousel(projectsTrack, projectsDots, 2, projectsEmpty);
   reflowCarousel(workTrack, workDots, 2, workEmpty);
   reflowCarousel(recTrack, recDots, 2, recEmpty);
-  document.querySelectorAll('[data-key]').forEach(el => { if(el.tagName !== 'INPUT') wireFieldHygiene(el); });
+  document.querySelectorAll('[data-key]').forEach(el => { if(el.tagName !== 'INPUT') wireFieldHygiene(el, { multiline: el.tagName === 'P' }); });
 
   /* ---------- Data extraction / restoration ---------- */
   function getSkillsData(){
