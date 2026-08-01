@@ -229,9 +229,7 @@
   /* project detail modal */
   .modal-close{ position:absolute; top:16px; right:16px; background:none; border:none; color:var(--light-dim); font-size:18px; cursor:pointer; line-height:1; padding:4px; }
   .modal-close:hover{ color:#fff; }
-  .project-modal{ position:relative; width:600px; max-width:92vw; text-align:left; box-shadow: 0 0 0 1px rgba(201,162,39,0.3), 0 0 55px 8px rgba(201,162,39,0.22), 0 25px 70px rgba(0,0,0,0.55); }
-  .card-details-btn{ background:none; border:none; color:inherit; font-size:12px; cursor:pointer; text-decoration:underline; text-underline-offset:2px; padding:0; }
-  .card-details-btn:hover{ color:var(--gold-deep); }
+  .project-modal{ position:relative; width:460px; max-width:90vw; text-align:left; }
   .project-modal .kicker{ color:var(--gold); margin-bottom:8px; }
   .project-modal h3{ font-family:var(--font-display); font-size:1.4rem; color:#fff; margin-bottom:14px; }
   .project-modal p{ color:var(--light-dim); font-size:0.95rem; line-height:1.75; margin-bottom:20px; }
@@ -571,8 +569,7 @@
 
   /* ---------- Login / edit mode ---------- */
   function getEditableEls(){
-    return document.querySelectorAll('[data-key], .skill-card h3, .skill-card p, .rec-card-item h3, .rec-card-item p, .proj-card h3, .proj-card p, .proj-card .card-year');
-  }
+    return document.querySelectorAll('[data-key], .skill-card h3, .skill-card p, .rec-card-item h3, .rec-card-item p');
   }
   const emailInput = document.getElementById('emailInput');
 
@@ -741,7 +738,9 @@
     });
     card.querySelectorAll('h3, p, .card-year').forEach(f => {
       wireFieldHygiene(f, { multiline: f.tagName === 'P' });
-      if(document.body.classList.contains('edit-mode')) f.setAttribute('contenteditable', 'true');
+      if(!card.classList.contains('proj-card') && document.body.classList.contains('edit-mode')){
+        f.setAttribute('contenteditable', 'true');
+      }
     });
   }
 
@@ -811,11 +810,11 @@
     modalCard = card;
     const editing = document.body.classList.contains('edit-mode');
     pmTitle.innerHTML = card.querySelector('h3').innerHTML;
+    pmDesc.innerHTML = card.querySelector('p').innerHTML;
     pmYear.innerHTML = card.querySelector('.card-year').innerHTML;
-    pmDesc.innerHTML = card.querySelector('.card-popup-desc').innerHTML;
     pmTitle.setAttribute('contenteditable', editing);
-    pmYear.setAttribute('contenteditable', editing);
     pmDesc.setAttribute('contenteditable', editing);
+    pmYear.setAttribute('contenteditable', editing);
     pmAddLinkRow.style.display = editing ? 'block' : 'none';
     renderModalLinks(getCardLinks(card));
     projectModalOverlay.classList.add('show');
@@ -824,11 +823,11 @@
   function closeProjectModal(){
     if(modalCard){
       sanitizeField(pmTitle);
-      sanitizeField(pmYear);
       sanitizeMultilineField(pmDesc);
+      sanitizeField(pmYear);
       modalCard.querySelector('h3').innerHTML = pmTitle.innerHTML;
+      modalCard.querySelector('p').innerHTML = pmDesc.innerHTML;
       modalCard.querySelector('.card-year').innerHTML = pmYear.innerHTML;
-      modalCard.querySelector('.card-popup-desc').innerHTML = pmDesc.innerHTML;
     }
     projectModalOverlay.classList.remove('show');
     modalCard = null;
@@ -854,14 +853,9 @@
 
   function wireCardModal(card){
     card.addEventListener('click', (e) => {
-      if(document.body.classList.contains('edit-mode')) return;
       if(e.target.closest('.card-controls')) return;
       openProjectModal(card);
     });
-  }
-  function wireDetailsButton(card){
-    const btn = card.querySelector('.card-details-btn');
-    if(btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openProjectModal(card); });
   }
 
   function wireStarsExtra(card){
@@ -888,21 +882,14 @@
       <div class="pct-row"><span>Proficiency</span><input type="range" min="10" max="100" value="${pct}" class="pct-slider"><span class="pct-val">${pct}%</span></div>
     </div>`;
   }
-  function projCardHTML(title, year, desc, links, popupDesc){
+  function projCardHTML(title, year, desc, links){
     const linksAttr = JSON.stringify(links || []).replace(/"/g, '&quot;');
     return `<div class="ccard proj-card">
-      <div class="card-controls">
-        <span class="drag-handle">⋮⋮ drag</span>
-        <div style="display:flex; align-items:center; gap:12px;">
-          <button class="card-details-btn" type="button">Details ⤢</button>
-          <button class="card-delete" title="Remove">✕</button>
-        </div>
-      </div>
+      <div class="card-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
       <div class="card-top-row"><span class="card-num">01</span><span class="card-year" contenteditable="false" data-placeholder="Year">${year}</span></div>
       <h3 contenteditable="false" data-placeholder="Project title">${title}</h3>
       <p contenteditable="false" data-placeholder="Describe the project...">${desc}</p>
       <div class="card-links" data-links="${linksAttr}" style="display:none;"></div>
-      <div class="card-popup-desc" style="display:none;">${popupDesc || ''}</div>
     </div>`;
   }
   function recCardHTML(name, rating, desc){
@@ -924,26 +911,22 @@
     if(focus){ goLastPage(skillsTrack, skillsDots, 3); el.querySelector('h3').focus(); }
     return el;
   }
-  function addProjectCard(data, focus){
-    data = data || {};
-    const el = elFromHTML(projCardHTML(data.title || '', data.year || '', data.desc || '', data.links || [], data.popupDesc || ''));
+  function addProjectCard(title, year, desc, links, focus){
+    const el = elFromHTML(projCardHTML(title, year, desc, links));
     projectsTrack.appendChild(el);
     wireCommonControls(el, projectsTrack, projectsDots, 2, projectsEmpty);
     wireCardModal(el);
-    wireDetailsButton(el);
     reflowCarousel(projectsTrack, projectsDots, 2, projectsEmpty);
-    if(focus){ goLastPage(projectsTrack, projectsDots, 2); el.querySelector('h3').focus(); }
+    if(focus){ goLastPage(projectsTrack, projectsDots, 2); openProjectModal(el); }
     return el;
   }
-  function addWorkCard(data, focus){
-    data = data || {};
-    const el = elFromHTML(projCardHTML(data.title || '', data.year || '', data.desc || '', data.links || [], data.popupDesc || ''));
+  function addWorkCard(title, year, desc, links, focus){
+    const el = elFromHTML(projCardHTML(title, year, desc, links));
     workTrack.appendChild(el);
     wireCommonControls(el, workTrack, workDots, 2, workEmpty);
     wireCardModal(el);
-    wireDetailsButton(el);
     reflowCarousel(workTrack, workDots, 2, workEmpty);
-    if(focus){ goLastPage(workTrack, workDots, 2); el.querySelector('h3').focus(); }
+    if(focus){ goLastPage(workTrack, workDots, 2); openProjectModal(el); }
     return el;
   }
   function addRecCard(name, rating, desc, focus){
@@ -957,8 +940,8 @@
   }
 
   document.getElementById('addSkillBtn').addEventListener('click', () => addSkillCard('', '', 50, true));
-  document.getElementById('addProjectBtn').addEventListener('click', () => addProjectCard({}, true));
-  document.getElementById('addWorkBtn').addEventListener('click', () => addWorkCard({}, true));
+  document.getElementById('addProjectBtn').addEventListener('click', () => addProjectCard('', '', '', [], true));
+  document.getElementById('addWorkBtn').addEventListener('click', () => addWorkCard('', '', '', [], true));
   document.getElementById('addRecBtn').addEventListener('click', () => addRecCard('', 5, '', true));
 
   /* ---------- Initial wiring + first reflow ---------- */
@@ -986,8 +969,7 @@
       title: c.querySelector('h3').innerHTML,
       year: c.querySelector('.card-year').innerHTML,
       desc: c.querySelector('p').innerHTML,
-      links: getCardLinks(c),
-      popupDesc: c.querySelector('.card-popup-desc').innerHTML
+      links: getCardLinks(c)
     }));
   }
   function getRecsData(){
@@ -998,7 +980,7 @@
     }));
   }
   function setSkillsData(arr){ skillsTrack.innerHTML = ''; arr.forEach(d => addSkillCard(d.title, d.desc, d.pct, false)); }
-  function setProjLikeData(track, dotsEl, emptyEl, arr, addFn){ track.innerHTML = ''; arr.forEach(d => addFn(d, false)); }
+  function setProjLikeData(track, dotsEl, emptyEl, arr, addFn){ track.innerHTML = ''; arr.forEach(d => addFn(d.title, d.year, d.desc, d.links || [], false)); }
   function setRecsData(arr){ recTrack.innerHTML = ''; arr.forEach(d => addRecCard(d.name, d.rating, d.desc, false)); }
 
   /* ---------- Avatar upload ---------- */
