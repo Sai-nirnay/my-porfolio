@@ -229,8 +229,9 @@
   /* project detail modal */
   .modal-close{ position:absolute; top:16px; right:16px; background:none; border:none; color:var(--light-dim); font-size:18px; cursor:pointer; line-height:1; padding:4px; }
   .modal-close:hover{ color:#fff; }
-  .project-modal{ position:relative; width:460px; max-width:90vw; text-align:left; }
-  .project-modal .kicker{ color:var(--gold); margin-bottom:8px; }
+  .project-modal{ position:relative; width:600px; max-width:92vw; text-align:left; box-shadow: 0 0 0 1px rgba(201,162,39,0.3), 0 0 55px 8px rgba(201,162,39,0.22), 0 25px 70px rgba(0,0,0,0.55); }
+  .card-details-btn{ background:none; border:none; color:inherit; font-size:12px; cursor:pointer; text-decoration:underline; text-underline-offset:2px; padding:0; }
+  .card-details-btn:hover{ color:var(--gold-deep); }  .project-modal .kicker{ color:var(--gold); margin-bottom:8px; }
   .project-modal h3{ font-family:var(--font-display); font-size:1.4rem; color:#fff; margin-bottom:14px; }
   .project-modal p{ color:var(--light-dim); font-size:0.95rem; line-height:1.75; margin-bottom:20px; }
   .project-modal [contenteditable]:empty:before{ color:var(--light-dim); opacity:0.6; }
@@ -569,7 +570,7 @@
 
   /* ---------- Login / edit mode ---------- */
   function getEditableEls(){
-    return document.querySelectorAll('[data-key], .skill-card h3, .skill-card p, .rec-card-item h3, .rec-card-item p');
+    return document.querySelectorAll('[data-key], .skill-card h3, .skill-card p, .rec-card-item h3, .rec-card-item p, .proj-card h3, .proj-card p, .proj-card .card-year');
   }
   const emailInput = document.getElementById('emailInput');
 
@@ -738,9 +739,7 @@
     });
     card.querySelectorAll('h3, p, .card-year').forEach(f => {
       wireFieldHygiene(f, { multiline: f.tagName === 'P' });
-      if(!card.classList.contains('proj-card') && document.body.classList.contains('edit-mode')){
-        f.setAttribute('contenteditable', 'true');
-      }
+      if(document.body.classList.contains('edit-mode')) f.setAttribute('contenteditable', 'true');
     });
   }
 
@@ -810,11 +809,11 @@
     modalCard = card;
     const editing = document.body.classList.contains('edit-mode');
     pmTitle.innerHTML = card.querySelector('h3').innerHTML;
-    pmDesc.innerHTML = card.querySelector('p').innerHTML;
     pmYear.innerHTML = card.querySelector('.card-year').innerHTML;
+    pmDesc.innerHTML = card.querySelector('.card-popup-desc').innerHTML;
     pmTitle.setAttribute('contenteditable', editing);
-    pmDesc.setAttribute('contenteditable', editing);
     pmYear.setAttribute('contenteditable', editing);
+    pmDesc.setAttribute('contenteditable', editing);
     pmAddLinkRow.style.display = editing ? 'block' : 'none';
     renderModalLinks(getCardLinks(card));
     projectModalOverlay.classList.add('show');
@@ -823,11 +822,11 @@
   function closeProjectModal(){
     if(modalCard){
       sanitizeField(pmTitle);
-      sanitizeMultilineField(pmDesc);
       sanitizeField(pmYear);
+      sanitizeMultilineField(pmDesc);
       modalCard.querySelector('h3').innerHTML = pmTitle.innerHTML;
-      modalCard.querySelector('p').innerHTML = pmDesc.innerHTML;
       modalCard.querySelector('.card-year').innerHTML = pmYear.innerHTML;
+      modalCard.querySelector('.card-popup-desc').innerHTML = pmDesc.innerHTML;
     }
     projectModalOverlay.classList.remove('show');
     modalCard = null;
@@ -853,9 +852,14 @@
 
   function wireCardModal(card){
     card.addEventListener('click', (e) => {
+      if(document.body.classList.contains('edit-mode')) return;
       if(e.target.closest('.card-controls')) return;
       openProjectModal(card);
     });
+  }
+  function wireDetailsButton(card){
+    const btn = card.querySelector('.card-details-btn');
+    if(btn) btn.addEventListener('click', (e) => { e.stopPropagation(); openProjectModal(card); });
   }
 
   function wireStarsExtra(card){
