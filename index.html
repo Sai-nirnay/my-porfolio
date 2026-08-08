@@ -558,6 +558,7 @@
 </footer>
 
 <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+<input type="file" id="achievementFileInput" accept="image/*" style="display:none;">
 
 <div class="modal-overlay" id="projectModalOverlay">
   <div class="modal project-modal">
@@ -568,6 +569,38 @@
     <div class="pm-links" id="pmLinks"></div>
     <div class="pm-add-link" id="pmAddLinkRow">
       <input type="text" id="pmNewLinkInput" placeholder="Paste a link and press Enter">
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="achievementModalOverlay">
+  <div class="modal achievement-modal">
+    <button class="modal-close" id="achievementModalClose" type="button">✕</button>
+    <div class="am-photo-frame" id="amPhotoFrame">
+      <img id="amPhotoImg" src="" alt="Achievement photo">
+    </div>
+    <div class="am-body">
+      <h3 id="amName" data-placeholder="Achievement name"></h3>
+      <p id="amDesc" data-placeholder="Describe this achievement..."></p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cropModalOverlay">
+  <div class="modal crop-modal">
+    <h3>Position your photo</h3>
+    <p>Drag to reposition, use the slider to zoom. Cropped to a certificate-friendly frame.</p>
+    <div class="crop-frame" id="cropFrame">
+      <img id="cropImg" src="" alt="">
+    </div>
+    <div class="crop-controls">
+      <span>−</span>
+      <input type="range" id="cropZoom" min="100" max="300" value="100">
+      <span>+</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-gold" id="cropSaveBtn" style="flex:1; border-radius:10px;">Save photo</button>
+      <button class="btn btn-outline" id="cropCancelBtn" style="flex:1; border-radius:10px;">Cancel</button>
     </div>
   </div>
 </div>
