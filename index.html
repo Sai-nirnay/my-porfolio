@@ -658,10 +658,14 @@
   const recTrack = document.getElementById('recTrack');
   const recDots = document.getElementById('recDots');
   const recEmpty = document.getElementById('recEmpty');
+  const achievementsTrack = document.getElementById('achievementsTrack');
+  const achievementsDots = document.getElementById('achievementsDots');
+  const achievementsEmpty = document.getElementById('achievementsEmpty');
+  const recEmpty = document.getElementById('recEmpty');
 
   /* ---------- Login / edit mode ---------- */
   function getEditableEls(){
-    return document.querySelectorAll('[data-key], .skill-card h3, .skill-card p, .rec-card-item h3, .rec-card-item p, .proj-card h3, .proj-card p, .proj-card .card-year');
+    return document.querySelectorAll('[data-key], .skill-card h3, .skill-card p, .rec-card-item h3, .rec-card-item p, .proj-card h3, .proj-card p, .proj-card .card-year, .ach-card h3');
   }
   const emailInput = document.getElementById('emailInput');
 
