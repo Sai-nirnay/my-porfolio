@@ -1005,6 +1005,22 @@
       <p contenteditable="false" data-placeholder="What did they say?">${desc}</p>
     </div>`;
   }
+  function achievementCardHTML(name, image, desc){
+    const hasImage = !!image;
+    return `<div class="ccard ach-card">
+      <div class="ach-photo-frame${hasImage ? ' has-image' : ''}">
+        <img src="${image || ''}" alt="Achievement photo">
+        <div class="ach-photo-placeholder">📷<br>No photo yet</div>
+        <div class="ach-photo-overlay">📷<br>Change photo</div>
+      </div>
+      <div class="ach-body">
+        <div class="card-controls"><span class="drag-handle">⋮⋮ drag</span><button class="card-delete" title="Remove">✕</button></div>
+        <h3 contenteditable="false" data-placeholder="Achievement name">${name}</h3>
+      </div>
+      <div class="card-popup-desc" style="display:none;">${desc || ''}</div>
+    </div>`;
+  }
+  
   /* ---------- Add-card functions ---------- */
   function addSkillCard(title, desc, pct, focus){
     const el = elFromHTML(skillCardHTML(title, desc, pct));
@@ -1046,11 +1062,22 @@
     if(focus){ goLastPage(recTrack, recDots, 2); el.querySelector('.rec-name').focus(); }
     return el;
   }
+  function addAchievementCard(data, focus){
+    data = data || {};
+    const el = elFromHTML(achievementCardHTML(data.name || '', data.image || '', data.desc || ''));
+    achievementsTrack.appendChild(el);
+    wireCommonControls(el, achievementsTrack, achievementsDots, 2, achievementsEmpty);
+    wireAchievementCard(el);
+    reflowCarousel(achievementsTrack, achievementsDots, 2, achievementsEmpty);
+    if(focus){ goLastPage(achievementsTrack, achievementsDots, 2); el.querySelector('h3').focus(); }
+    return el;
+  }
 
   document.getElementById('addSkillBtn').addEventListener('click', () => addSkillCard('', '', 50, true));
   document.getElementById('addProjectBtn').addEventListener('click', () => addProjectCard({}, true));
   document.getElementById('addWorkBtn').addEventListener('click', () => addWorkCard({}, true));
   document.getElementById('addRecBtn').addEventListener('click', () => addRecCard('', 5, '', true));
+  document.getElementById('addAchievementBtn').addEventListener('click', () => addAchievementCard({}, true));
 
   /* ---------- Initial wiring + first reflow ---------- */
   Array.from(skillsTrack.querySelectorAll('.ccard')).forEach(c => { wireCommonControls(c, skillsTrack, skillsDots, 3, null); wireSkillExtra(c); });
