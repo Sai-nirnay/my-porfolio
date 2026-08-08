@@ -1169,6 +1169,163 @@
     reader.readAsDataURL(file);
   });
 
+  /* ---------- Achievements: card wiring, popup, and crop tool ---------- */
+  const achievementFileInput = document.getElementById('achievementFileInput');
+  const achievementModalOverlay = document.getElementById('achievementModalOverlay');
+  const amPhotoFrame = document.getElementById('amPhotoFrame');
+  const amPhotoImg = document.getElementById('amPhotoImg');
+  const amName = document.getElementById('amName');
+  const amDesc = document.getElementById('amDesc');
+  let achievementModalCard = null;
+  let achievementUploadCard = null;
+
+  function openAchievementModal(card){
+    achievementModalCard = card;
+    const editing = document.body.classList.contains('edit-mode');
+    const img = card.querySelector('.ach-photo-frame img');
+    if(img.getAttribute('src')){
+      amPhotoImg.src = img.getAttribute('src');
+      amPhotoFrame.classList.add('has-image');
+    } else {
+      amPhotoFrame.classList.remove('has-image');
+    }
+    amName.innerHTML = card.querySelector('h3').innerHTML;
+    amDesc.innerHTML = card.querySelector('.card-popup-desc').innerHTML;
+    amName.setAttribute('contenteditable', editing);
+    amDesc.setAttribute('contenteditable', editing);
+    achievementModalOverlay.classList.add('show');
+  }
+  function closeAchievementModal(){
+    if(achievementModalCard){
+      sanitizeField(amName);
+      sanitizeMultilineField(amDesc);
+      achievementModalCard.querySelector('h3').innerHTML = amName.innerHTML;
+      achievementModalCard.querySelector('.card-popup-desc').innerHTML = amDesc.innerHTML;
+    }
+    achievementModalOverlay.classList.remove('show');
+    achievementModalCard = null;
+  }
+  document.getElementById('achievementModalClose').addEventListener('click', closeAchievementModal);
+  achievementModalOverlay.addEventListener('click', e => { if(e.target === achievementModalOverlay) closeAchievementModal(); });
+  wireFieldHygiene(amName);
+  wireFieldHygiene(amDesc, { multiline: true });
+
+  function applyAchievementImage(card, dataUrl){
+    const frame = card.querySelector('.ach-photo-frame');
+    const img = frame.querySelector('img');
+    img.src = dataUrl;
+    frame.classList.add('has-image');
+  }
+
+  function wireAchievementCard(card){
+    const frame = card.querySelector('.ach-photo-frame');
+    frame.querySelector('.ach-photo-overlay').addEventListener('click', (e) => {
+      e.stopPropagation();
+      achievementUploadCard = card;
+      achievementFileInput.click();
+    });
+    card.addEventListener('click', (e) => {
+      if(document.body.classList.contains('edit-mode')) return;
+      if(e.target.closest('.card-controls') || e.target.closest('.ach-photo-overlay')) return;
+      openAchievementModal(card);
+    });
+  }
+
+  achievementFileInput.addEventListener('change', () => {
+    const file = achievementFileInput.files[0];
+    if(!file || !achievementUploadCard) return;
+    const reader = new FileReader();
+    reader.onload = e => openCropTool(e.target.result);
+    reader.readAsDataURL(file);
+  });
+
+  /* Crop tool: drag to pan, slider to zoom, fixed certificate-style aspect ratio */
+  const cropModalOverlay = document.getElementById('cropModalOverlay');
+  const cropFrame = document.getElementById('cropFrame');
+  const cropImg = document.getElementById('cropImg');
+  const cropZoom = document.getElementById('cropZoom');
+  const FRAME_W = 420, FRAME_H = 300, OUTPUT_SCALE = 2;
+  let cropState = { naturalW:0, naturalH:0, baseScale:1, left:0, top:0, dragging:false, startX:0, startY:0, startLeft:0, startTop:0 };
+
+  function openCropTool(dataUrl){
+    const img = new Image();
+    img.onload = () => {
+      cropState.naturalW = img.width;
+      cropState.naturalH = img.height;
+      cropState.baseScale = Math.max(FRAME_W / img.width, FRAME_H / img.height);
+      cropZoom.value = 100;
+      applyCropTransform(100, true);
+      cropModalOverlay.classList.add('show');
+    };
+    cropImg.src = dataUrl;
+    img.src = dataUrl;
+  }
+
+  function applyCropTransform(zoomPct, recenter){
+    const scale = cropState.baseScale * (zoomPct / 100);
+    const w = cropState.naturalW * scale;
+    const h = cropState.naturalH * scale;
+    if(recenter){
+      cropState.left = (FRAME_W - w) / 2;
+      cropState.top = (FRAME_H - h) / 2;
+    } else {
+      cropState.left = Math.min(0, Math.max(FRAME_W - w, cropState.left));
+      cropState.top = Math.min(0, Math.max(FRAME_H - h, cropState.top));
+    }
+    cropImg.style.width = w + 'px';
+    cropImg.style.height = h + 'px';
+    cropImg.style.transform = `translate(${cropState.left}px, ${cropState.top}px)`;
+  }
+
+  cropZoom.addEventListener('input', () => applyCropTransform(parseFloat(cropZoom.value), false));
+
+  function cropPointerDown(x, y){
+    cropState.dragging = true;
+    cropState.startX = x; cropState.startY = y;
+    cropState.startLeft = cropState.left; cropState.startTop = cropState.top;
+    cropFrame.classList.add('dragging');
+  }
+  function cropPointerMove(x, y){
+    if(!cropState.dragging) return;
+    cropState.left = cropState.startLeft + (x - cropState.startX);
+    cropState.top = cropState.startTop + (y - cropState.startY);
+    applyCropTransform(parseFloat(cropZoom.value), false);
+  }
+  function cropPointerUp(){
+    cropState.dragging = false;
+    cropFrame.classList.remove('dragging');
+  }
+  cropFrame.addEventListener('mousedown', e => cropPointerDown(e.clientX, e.clientY));
+  window.addEventListener('mousemove', e => cropPointerMove(e.clientX, e.clientY));
+  window.addEventListener('mouseup', cropPointerUp);
+  cropFrame.addEventListener('touchstart', e => { const t = e.touches[0]; cropPointerDown(t.clientX, t.clientY); });
+  cropFrame.addEventListener('touchmove', e => { const t = e.touches[0]; cropPointerMove(t.clientX, t.clientY); e.preventDefault(); }, { passive:false });
+  cropFrame.addEventListener('touchend', cropPointerUp);
+
+  document.getElementById('cropCancelBtn').addEventListener('click', () => {
+    cropModalOverlay.classList.remove('show');
+    achievementUploadCard = null;
+    achievementFileInput.value = '';
+  });
+  document.getElementById('cropSaveBtn').addEventListener('click', () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = FRAME_W * OUTPUT_SCALE;
+    canvas.height = FRAME_H * OUTPUT_SCALE;
+    const ctx = canvas.getContext('2d');
+    const scale = cropState.baseScale * (parseFloat(cropZoom.value) / 100);
+    ctx.drawImage(
+      cropImg,
+      0, 0, cropState.naturalW, cropState.naturalH,
+      cropState.left * OUTPUT_SCALE, cropState.top * OUTPUT_SCALE,
+      cropState.naturalW * scale * OUTPUT_SCALE, cropState.naturalH * scale * OUTPUT_SCALE
+    );
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+    if(achievementUploadCard) applyAchievementImage(achievementUploadCard, dataUrl);
+    cropModalOverlay.classList.remove('show');
+    achievementUploadCard = null;
+    achievementFileInput.value = '';
+  });
+
   /* ---------- Save / load everything ---------- */
   document.getElementById('saveBtn').addEventListener('click', async () => {
     const textContent = {};
