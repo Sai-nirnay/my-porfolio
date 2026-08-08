@@ -1085,10 +1085,12 @@
   attachDragover(projectsTrack);
   attachDragover(workTrack);
   attachDragover(recTrack);
+  attachDragover(achievementsTrack);
   reflowCarousel(skillsTrack, skillsDots, 3, null);
   reflowCarousel(projectsTrack, projectsDots, 2, projectsEmpty);
   reflowCarousel(workTrack, workDots, 2, workEmpty);
   reflowCarousel(recTrack, recDots, 2, recEmpty);
+  reflowCarousel(achievementsTrack, achievementsDots, 2, achievementsEmpty);
   document.querySelectorAll('[data-key]').forEach(el => { if(el.tagName !== 'INPUT') wireFieldHygiene(el, { multiline: el.tagName === 'P' }); });
 
   /* ---------- Data extraction / restoration ---------- */
